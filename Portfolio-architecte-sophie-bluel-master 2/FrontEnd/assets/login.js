@@ -34,11 +34,43 @@ const password = document.getElementById("password").value;
       .catch((error) => {
         alert("Erreur dans l'identifiant ou le mot de passe"); // Affiche une alerte s'il y a une erreur
       });
+    
 }
 
 
 
       
+document.addEventListener("DOMContentLoaded", function() {
+  console.log("Chargement de la page index.html");
+
+  function login() {
+      const modifyButton = document.getElementById("modifyButton");
+      const filtersRemove = document.getElementById("filtersRemove");
+      const blackBand = document.querySelector(".blackBand");
+
+      if (!modifyButton || !filtersRemove) {
+          console.error("Les éléments modifyButton ou filtersRemove n'existent pas.");
+          return;
+      }
+
+      const token = sessionStorage.getItem("token");
+      console.log("Vérification du jeton dans sessionStorage:", token);
+
+      if (token) {
+          modifyButton.style.display = "flex";
+          filtersRemove.style.display = "none";
+          blackBand.style.display = "flex";
+          console.log("Bouton modify affiché, filtres cachés");
+      } else {
+          modifyButton.style.display = "none";
+          filtersRemove.style.display = "flex";
+          blackBand.style.display = "none";
+          console.log("Bouton modify caché, filtres affichés");
+      }
+  }
+
+  login();
+});
 
     
 
