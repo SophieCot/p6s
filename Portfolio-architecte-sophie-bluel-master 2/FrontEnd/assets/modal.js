@@ -60,29 +60,36 @@ document.addEventListener("DOMContentLoaded", () => {
     function eraseWork() {
         const garbages = document.querySelectorAll(".fa-trash-can");
         garbages.forEach(element => {
-            element.addEventListener("click", () => {
+            element.addEventListener("click", async () => {
                 const id = element.id;
-                fetch("http://localhost:5678/api/works/" + id, {
-                    method: "DELETE",
-                    headers: {
-                        "Authorization": "Bearer " + sessionStorage.getItem("token")
+                
+                // Ajouter une confirmation de suppression
+                const confirmation = confirm("Êtes-vous sûr de vouloir supprimer cet élément ?");
+                
+                if (confirmation) {
+                    try {
+                        const response = await fetch(`http://localhost:5678/api/works/${id}`, {
+                            method: "DELETE",
+                            headers: {
+                                "Authorization": "Bearer " + sessionStorage.getItem("token")
+                            }
+                        });
+                        if (!response.ok) {
+                            throw new Error("Le delete n'a pas marché");
+                        }
+                        // Supprimer l'élément du DOM sans recharger la page
+                        element.closest("figure").remove();
+                        console.log("Le delete a réussi");
+                    } catch (error) {
+                        console.log('Erreur:', error);
                     }
-                })
-                .then((response) => {
-                    if (!response.ok) {
-                        console.log("Le delete n'a pas marché");
-                    }
-                    return response.json();
-                })
-                .then((data) => {
-                    console.log("Le delete a réussi, voici la data:", data);
-                    displayWorksModal();
-                })
-                .catch(error => console.log('Erreur:', error));
+                } else {
+                    console.log("Suppression annulée");
+                }
             });
         });
     }
-
+    
     // Afficher la deuxième modal
     addImageButton.addEventListener("click", () => {
         modalAddImage.style.display = "flex";
